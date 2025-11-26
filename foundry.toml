@@ -1,0 +1,60 @@
+[profile.default]
+out = "out"
+libs = ["lib"]
+deny = "warnings"
+optimizer = true
+optimizer_runs = 100000
+dynamic_test_linking = true
+isolate = true
+gas_reports = [
+  "CollateralManager",
+  "Controller",
+  "MultiCall",
+  "StakedAsset",
+  "SwapModule",
+  "AssetToken",
+  "RevenueModule"
+]
+fs_permissions = [{ access = "read-write", path = "./" }]
+
+# remappings for layerzero dependencies
+remappings = [
+    '@layerzerolabs/oft-evm/=lib/devtools/packages/oft-evm/',
+    '@layerzerolabs/oapp-evm/=lib/devtools/packages/oapp-evm/',
+    '@layerzerolabs/lz-evm-protocol-v2/=lib/LayerZero-v2/packages/layerzero-v2/evm/protocol',
+    '@layerzerolabs/lz-evm-messagelib-v2/=lib/LayerZero-v2/packages/layerzero-v2/evm/messagelib',
+    '@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/',
+    'solidity-bytes-utils/=lib/solidity-bytes-utils/',
+]
+
+# compile production contracts with via-ir
+[profile.production]
+src = "src"
+skip = ["test/**/*"]
+via_ir = true
+ffi = true
+optimizer = true
+optimizer_runs = 8888888
+
+[lint]
+ignore = ["test/external/**/*"]
+exclude_lints = [
+  "mixed-case-variable",
+  "screaming-snake-case-immutable",
+  "asm-keccak256",
+  "unwrapped-modifier-logic"
+]
+
+[fuzz]
+runs = 10000
+
+[profile.coverage]
+skip = ["test/external/*", "test/integration/*", "test/fork/*", "test/invariant/*", "test/mocks/*"]
+
+[rpc_endpoints]
+mainnet = "${MAINNET_RPC_URL}"
+
+[invariant]
+runs = 888
+depth = 50
+fail_on_revert = false
