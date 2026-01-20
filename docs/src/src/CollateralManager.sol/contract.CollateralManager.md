@@ -1,5 +1,5 @@
 # CollateralManager
-[Git Source](https://github.com/tenbinlabs/monorepo/blob/d116a5615213d266827c42f1b2c31cdd3a1c6ae1/src/CollateralManager.sol)
+[Git Source](https://github.com/tenbinlabs/contracts/blob/52078fe5e746ed0afc4c8edd1b841cf0bc5824e3/src/CollateralManager.sol)
 
 **Inherits:**
 [ICollateralManager](/src/interface/ICollateralManager.sol/interface.ICollateralManager.md), UUPSUpgradeable, AccessControlUpgradeable, ReentrancyGuardTransient
@@ -66,15 +66,6 @@ bytes32 public constant GATEKEEPER_ROLE = keccak256("GATEKEEPER_ROLE")
 
 ```solidity
 bytes32 public constant CAP_ADJUSTER_ROLE = keccak256("CAP_ADJUSTER_ROLE")
-```
-
-
-### BASIS_PRECISION
-Precision for basis calculations. 10,000 = 100%
-
-
-```solidity
-uint256 internal constant BASIS_PRECISION = 10_000
 ```
 
 
@@ -452,25 +443,25 @@ function getRevenue(address collateral) external view returns (uint256 revenue);
 |`collateral`|`address`|Get revenue for a specific collateral|
 
 
-### getAssets
+### getVaultAssets
 
-Get total asset for a collateral type (not including revenue)
+Get vault total assets for a collateral
 
 
 ```solidity
-function getAssets(address collateral) external view returns (uint256 assets);
+function getVaultAssets(address collateral) external view returns (uint256 assets);
 ```
 **Parameters**
 
 |Name|Type|Description|
 |----|----|-----------|
-|`collateral`|`address`|Collateral to get assets for|
+|`collateral`|`address`|Collateral to get vault assets for|
 
 **Returns**
 
 |Name|Type|Description|
 |----|----|-----------|
-|`assets`|`uint256`|Total assets for a collateral type (not including revenue)|
+|`assets`|`uint256`|Total asset value of vault for a collateral|
 
 
 ### deposit
@@ -479,7 +470,11 @@ Deposit collateral into underlying vault
 
 
 ```solidity
-function deposit(address collateral, uint256 amount) external nonReentrant notPaused onlyRole(CURATOR_ROLE);
+function deposit(address collateral, uint256 amount, uint256 minShares)
+    external
+    nonReentrant
+    notPaused
+    onlyRole(CURATOR_ROLE);
 ```
 **Parameters**
 
@@ -487,6 +482,7 @@ function deposit(address collateral, uint256 amount) external nonReentrant notPa
 |----|----|-----------|
 |`collateral`|`address`|Collateral used to deposit into vault|
 |`amount`|`uint256`|Amount of collateral to deposit|
+|`minShares`|`uint256`|Minimum number of shares to receive|
 
 
 ### withdraw
@@ -495,7 +491,11 @@ Withdraw collateral from underlying vault
 
 
 ```solidity
-function withdraw(address collateral, uint256 amount) external nonReentrant notPaused onlyRole(CURATOR_ROLE);
+function withdraw(address collateral, uint256 amount, uint256 maxShares)
+    external
+    nonReentrant
+    notPaused
+    onlyRole(CURATOR_ROLE);
 ```
 **Parameters**
 
@@ -503,6 +503,7 @@ function withdraw(address collateral, uint256 amount) external nonReentrant notP
 |----|----|-----------|
 |`collateral`|`address`|Collateral to withdraw from vault|
 |`amount`|`uint256`|Amount of collateral to withdraw|
+|`maxShares`|`uint256`|Maximum number of shares to redeem|
 
 
 ### withdrawRevenue

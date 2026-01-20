@@ -1,5 +1,5 @@
 # StakedAsset
-[Git Source](https://github.com/tenbinlabs/monorepo/blob/d116a5615213d266827c42f1b2c31cdd3a1c6ae1/src/StakedAsset.sol)
+[Git Source](https://github.com/tenbinlabs/contracts/blob/52078fe5e746ed0afc4c8edd1b841cf0bc5824e3/src/StakedAsset.sol)
 
 **Inherits:**
 [IStakedAsset](/src/interface/IStakedAsset.sol/interface.IStakedAsset.md), [IRestrictedRegistry](/src/interface/IRestrictedRegistry.sol/interface.IRestrictedRegistry.md), UUPSUpgradeable, ERC20PermitUpgradeable, ERC4626Upgradeable, AccessControlUpgradeable
@@ -187,24 +187,6 @@ function pendingRewards() external view returns (uint256 amount);
 |`amount`|`uint256`|Pending unvested rewards|
 
 
-### reward
-
-Adds new rewards to the contract and extends vesting period
-
-WARNING: This resets the vesting end time to block.timestamp + vesting.period,
-which can delay distribution of previously pending rewards
-
-
-```solidity
-function reward(uint256 assets) external onlyRole(REWARDER_ROLE);
-```
-**Parameters**
-
-|Name|Type|Description|
-|----|----|-----------|
-|`assets`|`uint256`|Amount of asset tokens to transfer to this contract as a reward|
-
-
 ### cooldownShares
 
 Enter cooldown for amount of `shares`
@@ -216,7 +198,11 @@ until the cooldown period has passed. Once cooldown has passed, call unstake() t
 
 
 ```solidity
-function cooldownShares(address owner, uint256 shares) external nonRestricted(owner) returns (uint256 assets);
+function cooldownShares(address owner, uint256 shares)
+    external
+    nonRestricted(msg.sender)
+    nonRestricted(owner)
+    returns (uint256 assets);
 ```
 **Parameters**
 
@@ -243,7 +229,11 @@ until the cooldown period has passed. Once cooldown has passed, call unstake() t
 
 
 ```solidity
-function cooldownAssets(address owner, uint256 assets) external nonRestricted(owner) returns (uint256 shares);
+function cooldownAssets(address owner, uint256 assets)
+    external
+    nonRestricted(msg.sender)
+    nonRestricted(owner)
+    returns (uint256 shares);
 ```
 **Parameters**
 
@@ -274,11 +264,43 @@ function unstake(address to) external nonRestricted(msg.sender) nonRestricted(to
 |`to`|`address`|Account to transfer assets to|
 
 
+### cancelCooldown
+
+Cancel a cooldown for an account
+
+This will mint new shares using assets in the silo
+An account can only cancel its entire cooldown amount
+
+
+```solidity
+function cancelCooldown() external nonRestricted(msg.sender);
+```
+
+### reward
+
+Adds new rewards to the contract and extends vesting period
+
+WARNING: This resets the vesting end time to block.timestamp + vesting.period,
+which can delay distribution of previously pending rewards
+
+
+```solidity
+function reward(uint256 assets) external onlyRole(REWARDER_ROLE);
+```
+**Parameters**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`assets`|`uint256`|Amount of asset tokens to transfer to this contract as a reward|
+
+
 ### setVestingPeriod
 
 Set a new vesting period
 
 Note: setting low vesting periods causes rounding issues
+Warning: Setting a new vesting period will cause the current vesting period to reset
+with the remaining rewards vested over the new vesting period
 
 
 ```solidity
@@ -395,6 +417,7 @@ Withdraw function which reverts when cooldown is active
 function withdraw(uint256 assets, address receiver, address owner)
     public
     override
+    nonRestricted(msg.sender)
     nonRestricted(receiver)
     nonRestricted(owner)
     returns (uint256);
@@ -409,6 +432,7 @@ Redeem function which requires cooldown
 function redeem(uint256 shares, address receiver, address owner)
     public
     override
+    nonRestricted(msg.sender)
     nonRestricted(receiver)
     nonRestricted(owner)
     returns (uint256);

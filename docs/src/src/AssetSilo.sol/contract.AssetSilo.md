@@ -1,10 +1,11 @@
 # AssetSilo
-[Git Source](https://github.com/tenbinlabs/monorepo/blob/d116a5615213d266827c42f1b2c31cdd3a1c6ae1/src/AssetSilo.sol)
+[Git Source](https://github.com/tenbinlabs/contracts/blob/52078fe5e746ed0afc4c8edd1b841cf0bc5824e3/src/AssetSilo.sol)
 
 **Title:**
 AssetSilo
 
 Stores assets in cooldown for Tenbin protocol staking
+Allows for canceling a cooldown by minting new staked assets
 
 
 ## State Variables
@@ -57,6 +58,22 @@ function withdraw(address to, uint256 amount) external;
 |----|----|-----------|
 |`to`|`address`|Account to withdraw tokens to|
 |`amount`|`uint256`|Amount of tokens to withdraw|
+
+
+### cancel
+
+Cancel cooldown for an account by minting new shares
+
+
+```solidity
+function cancel(address account, uint256 amount) external;
+```
+**Parameters**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`account`|`address`|Account to mint new staking shares for|
+|`amount`|`uint256`|Amount of assets to deposit|
 
 
 ## Errors

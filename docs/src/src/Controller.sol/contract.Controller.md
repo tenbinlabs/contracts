@@ -1,5 +1,5 @@
 # Controller
-[Git Source](https://github.com/tenbinlabs/monorepo/blob/d116a5615213d266827c42f1b2c31cdd3a1c6ae1/src/Controller.sol)
+[Git Source](https://github.com/tenbinlabs/contracts/blob/52078fe5e746ed0afc4c8edd1b841cf0bc5824e3/src/Controller.sol)
 
 **Inherits:**
 [IController](/src/interface/IController.sol/interface.IController.md), [IRestrictedRegistry](/src/interface/IRestrictedRegistry.sol/interface.IRestrictedRegistry.md), AccessControl, EIP712
@@ -117,7 +117,7 @@ Semantic version
 
 
 ```solidity
-string public constant VERSION = "1.0.6"
+string public constant VERSION = "1.1.0"
 ```
 
 
