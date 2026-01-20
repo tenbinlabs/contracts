@@ -1,5 +1,5 @@
 # IStakedAsset
-[Git Source](https://github.com/tenbinlabs/monorepo/blob/d116a5615213d266827c42f1b2c31cdd3a1c6ae1/src/interface/IStakedAsset.sol)
+[Git Source](https://github.com/tenbinlabs/contracts/blob/52078fe5e746ed0afc4c8edd1b841cf0bc5824e3/src/interface/IStakedAsset.sol)
 
 **Title:**
 IStakedAsset
@@ -21,24 +21,6 @@ function pendingRewards() external view returns (uint256 pending);
 |Name|Type|Description|
 |----|----|-----------|
 |`pending`|`uint256`|Pending unvested token reward|
-
-
-### reward
-
-Adds new rewards to the contract and extends vesting period
-
-WARNING: This resets the vesting end time to block.timestamp + vesting.period,
-which can delay distribution of previously pending rewards
-
-
-```solidity
-function reward(uint256 assets) external;
-```
-**Parameters**
-
-|Name|Type|Description|
-|----|----|-----------|
-|`assets`|`uint256`|Amount of asset tokens to transfer to this contract as a reward|
 
 
 ### cooldownShares
@@ -110,6 +92,24 @@ function unstake(address to) external;
 |`to`|`address`|Account to receive assets|
 
 
+### reward
+
+Adds new rewards to the contract and extends vesting period
+
+WARNING: This resets the vesting end time to block.timestamp + vesting.period,
+which can delay distribution of previously pending rewards
+
+
+```solidity
+function reward(uint256 assets) external;
+```
+**Parameters**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`assets`|`uint256`|Amount of asset tokens to transfer to this contract as a reward|
+
+
 ## Events
 ### RewardsReceived
 Emitted when new rewards are received by this contract
@@ -170,6 +170,21 @@ event Unstake(address indexed from, address to, uint256 assets);
 |`from`|`address`|Account which is unstaking|
 |`to`|`address`|Account to receive assets|
 |`assets`|`uint256`|Amount of assets transferred|
+
+### CooldownCancelled
+Emitted when an account cancels a cooldown
+
+
+```solidity
+event CooldownCancelled(address indexed account, uint256 assets);
+```
+
+**Parameters**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`account`|`address`|Account which cancelled cooldown|
+|`assets`|`uint256`|Amount of assets returned to the staking pool|
 
 ### VestingPeriodUpdated
 Emitted when the vesting period gets updated
@@ -240,6 +255,14 @@ Max vesting period exceeded
 error ExceedsMaxVestingPeriod();
 ```
 
+### InvalidCooldownAmount
+Cannot cooldown zero assets or shares
+
+
+```solidity
+error InvalidCooldownAmount();
+```
+
 ### InvalidRescueToken
 Cannot rescue asset token from staking contract
 
@@ -278,14 +301,6 @@ Min cooldown period subceeded
 
 ```solidity
 error SubceedsMinVestingPeriod();
-```
-
-### VestingNotCompleted
-Must not be vesting
-
-
-```solidity
-error VestingNotCompleted();
 ```
 
 ## Structs

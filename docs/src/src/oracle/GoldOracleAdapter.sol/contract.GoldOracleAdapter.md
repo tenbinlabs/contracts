@@ -1,5 +1,5 @@
 # GoldOracleAdapter
-[Git Source](https://github.com/tenbinlabs/monorepo/blob/d116a5615213d266827c42f1b2c31cdd3a1c6ae1/src/oracle/GoldOracleAdapter.sol)
+[Git Source](https://github.com/tenbinlabs/contracts/blob/52078fe5e746ed0afc4c8edd1b841cf0bc5824e3/src/oracle/GoldOracleAdapter.sol)
 
 **Inherits:**
 [IOracleAdapter](/src/interface/IOracleAdapter.sol/interface.IOracleAdapter.md)
@@ -21,11 +21,11 @@ uint256 internal constant DECIMALS_OFFSET = 1e10
 
 
 ### PRICE_STALENESS_THRESHOLD
-Stale price threshold (e.g., 1 hour for XAU/USD)
+Stale price threshold (e.g., 24 hours for XAU/USD)
 
 
 ```solidity
-uint256 public constant PRICE_STALENESS_THRESHOLD = 3600
+uint256 public constant PRICE_STALENESS_THRESHOLD = 1 days
 ```
 
 
