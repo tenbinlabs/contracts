@@ -22,5 +22,8 @@
       "name": "v5.4.0",
       "rev": "e725abddf1e01cf05ace496e950fc8e243cc7cab"
     }
+  },
+  "lib/vault-v2": {
+    "rev": "00881eb5f5c8031252c7fcdb7cd7e026bb21cfa4"
   }
 }
