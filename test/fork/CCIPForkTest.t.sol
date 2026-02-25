@@ -90,7 +90,7 @@ contract CCIPForkTest is ForkBaseTest {
 
         setUpNewLabels();
         // Configure pools
-        // souce chain
+        // source chain
         // asset
         configPool(
             sourceFork,

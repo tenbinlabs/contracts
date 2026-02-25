@@ -2,18 +2,18 @@
 pragma solidity 0.8.30;
 
 import {Config} from "forge-std/Config.sol";
-import {DeployTestnet} from "script/DeployTestnet.s.sol";
+import {DeployMock} from "script/DeployMock.s.sol";
 import {IERC20} from "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol";
 import {Test} from "forge-std/Test.sol";
 
 // test deployment script
 // this requires .env is set up correctly
-contract DeploymentTest is Test, Config {
+contract DeployTest is Test, Config {
     using SafeERC20 for IERC20;
 
     // default values
-    uint256 public constant DEFAULT_RATIO = 1e17;
+    uint256 public constant DEFAULT_RATIO = 2e17;
     uint128 public constant DEFAULT_COOLDOWN_PERIOD = 180 seconds;
     uint128 public constant DEFAULT_VESTING_PERIOD = 1200 seconds;
 
@@ -33,59 +33,71 @@ contract DeploymentTest is Test, Config {
     bytes32 internal constant SIGNER_MANAGER_ROLE = keccak256("SIGNER_MANAGER_ROLE");
 
     // variables
-    DeployTestnet.DeploymentResult deployment;
+    DeployMock.DeploymentResult deployment;
 
     function setUp() public {
-        DeployTestnet deployer = new DeployTestnet();
+        DeployMock deployer = new DeployMock();
         deployment = deployer.run();
     }
 
-    function test_Deployment() public {
-        _loadConfig("./config.toml", false);
+    function test_DeployMock() public {
+        _loadConfig("./config/local.toml", false);
         // check default admin roles
-        assertEq(deployment.controller.hasRole(DEFAULT_ADMIN_ROLE, config.get("owner").toAddress()), true);
-        assertEq(deployment.manager.hasRole(DEFAULT_ADMIN_ROLE, config.get("owner").toAddress()), true);
-        assertEq(deployment.asset.pendingOwner(), config.get("owner").toAddress());
-        assertEq(deployment.multicall.hasRole(DEFAULT_ADMIN_ROLE, config.get("owner").toAddress()), true);
-        assertEq(deployment.staking.hasRole(DEFAULT_ADMIN_ROLE, config.get("owner").toAddress()), true);
-        assertEq(deployment.revenueModule.hasRole(DEFAULT_ADMIN_ROLE, config.get("owner").toAddress()), true);
-        assertEq(deployment.custodianModule.hasRole(DEFAULT_ADMIN_ROLE, config.get("owner").toAddress()), true);
+        assertEq(deployment.controller.hasRole(DEFAULT_ADMIN_ROLE, config.get("default_admin_role").toAddress()), true);
+        assertEq(deployment.manager.hasRole(DEFAULT_ADMIN_ROLE, config.get("default_admin_role").toAddress()), true);
+        assertEq(deployment.asset.pendingOwner(), config.get("default_admin_role").toAddress());
+        assertEq(deployment.multicall.hasRole(DEFAULT_ADMIN_ROLE, config.get("default_admin_role").toAddress()), true);
+        assertEq(deployment.staking.hasRole(DEFAULT_ADMIN_ROLE, config.get("default_admin_role").toAddress()), true);
+        assertEq(
+            deployment.revenueModule.hasRole(DEFAULT_ADMIN_ROLE, config.get("default_admin_role").toAddress()), true
+        );
+        assertEq(
+            deployment.custodianModule.hasRole(DEFAULT_ADMIN_ROLE, config.get("default_admin_role").toAddress()), true
+        );
 
         // check controller roles
-        assertEq(deployment.controller.hasRole(MINTER_ROLE, config.get("minter").toAddress()), true);
-        assertEq(deployment.controller.hasRole(GATEKEEPER_ROLE, config.get("gatekeeper").toAddress()), true);
-        assertEq(deployment.controller.hasRole(ADMIN_ROLE, config.get("admin").toAddress()), true);
-        assertEq(deployment.controller.hasRole(SIGNER_MANAGER_ROLE, config.get("signer_manager").toAddress()), true);
-        assertEq(deployment.controller.hasRole(RESTRICTER_ROLE, config.get("restricter").toAddress()), true);
+        assertEq(deployment.controller.hasRole(MINTER_ROLE, config.get("minter_role").toAddress()), true);
+        assertEq(deployment.controller.hasRole(GATEKEEPER_ROLE, config.get("gatekeeper_role").toAddress()), true);
+        assertEq(deployment.controller.hasRole(ADMIN_ROLE, config.get("admin_role").toAddress()), true);
+        assertEq(
+            deployment.controller.hasRole(SIGNER_MANAGER_ROLE, config.get("signer_manager_role").toAddress()), true
+        );
+        assertEq(deployment.controller.hasRole(RESTRICTER_ROLE, config.get("restricter_role").toAddress()), true);
 
         // check manager roles
         assertEq(deployment.manager.revenueModule(), address(deployment.revenueModule));
-        assertEq(deployment.manager.hasRole(ADMIN_ROLE, config.get("admin").toAddress()), true);
-        assertEq(deployment.manager.hasRole(CURATOR_ROLE, config.get("curator").toAddress()), true);
-        assertEq(deployment.manager.hasRole(REBALANCER_ROLE, config.get("custodian").toAddress()), true);
-        assertEq(deployment.manager.hasRole(GATEKEEPER_ROLE, config.get("gatekeeper").toAddress()), true);
-        assertEq(deployment.manager.hasRole(CAP_ADJUSTER_ROLE, config.get("cap_adjuster").toAddress()), true);
+        assertEq(deployment.manager.hasRole(ADMIN_ROLE, config.get("admin_role").toAddress()), true);
+        assertEq(deployment.manager.hasRole(CURATOR_ROLE, config.get("curator_role").toAddress()), true);
+        assertEq(deployment.manager.hasRole(REBALANCER_ROLE, config.get("rebalancer_role").toAddress()), true);
+        assertEq(deployment.manager.hasRole(GATEKEEPER_ROLE, config.get("gatekeeper_role").toAddress()), true);
+        assertEq(deployment.manager.hasRole(CAP_ADJUSTER_ROLE, config.get("cap_adjuster_role").toAddress()), true);
 
         // check staking roles
-        assertEq(deployment.staking.hasRole(REWARDER_ROLE, config.get("rewarder").toAddress()), true);
+        assertEq(deployment.staking.hasRole(REWARDER_ROLE, config.get("rewarder_role").toAddress()), true);
         assertEq(deployment.staking.hasRole(REWARDER_ROLE, address(deployment.revenueModule)), true);
-        assertEq(deployment.staking.hasRole(ADMIN_ROLE, config.get("admin").toAddress()), true);
-        assertEq(deployment.staking.hasRole(RESTRICTER_ROLE, config.get("restricter").toAddress()), true);
+        assertEq(deployment.staking.hasRole(ADMIN_ROLE, config.get("admin_role").toAddress()), true);
+        assertEq(deployment.staking.hasRole(RESTRICTER_ROLE, config.get("restricter_role").toAddress()), true);
 
         // check multicall roles
-        assertEq(deployment.multicall.hasRole(MULTICALLER_ROLE, config.get("multicaller").toAddress()), true);
+        assertEq(deployment.multicall.hasRole(MULTICALLER_ROLE, config.get("multicaller_role").toAddress()), true);
 
         // check revenue manager roles
-        assertEq(deployment.revenueModule.hasRole(DEFAULT_ADMIN_ROLE, config.get("owner").toAddress()), true);
-        assertEq(deployment.revenueModule.hasRole(REVENUE_KEEPER_ROLE, config.get("revenue_keeper").toAddress()), true);
+        assertEq(
+            deployment.revenueModule.hasRole(DEFAULT_ADMIN_ROLE, config.get("default_admin_role").toAddress()), true
+        );
+        assertEq(
+            deployment.revenueModule.hasRole(REVENUE_KEEPER_ROLE, config.get("revenue_keeper_role").toAddress()), true
+        );
 
         // check custodian module roles
         assertEq(
-            deployment.custodianModule.hasRole(CUSTODIAN_KEEPER_ROLE, config.get("custodian_keeper").toAddress()), true
+            deployment.custodianModule.hasRole(CUSTODIAN_KEEPER_ROLE, config.get("custodian_keeper_role").toAddress()),
+            true
         );
 
         // ensure roles are renounced by deployer (except local dev)
         if (block.chainid != 31337) {
+            assertNotEq(deployment.asset.owner(), config.get("default_admin_role").toAddress());
             assertFalse(deployment.controller.hasRole(DEFAULT_ADMIN_ROLE, config.get("deployer").toAddress()));
             assertFalse(deployment.manager.hasRole(DEFAULT_ADMIN_ROLE, config.get("deployer").toAddress()));
             assertFalse(deployment.multicall.hasRole(DEFAULT_ADMIN_ROLE, config.get("deployer").toAddress()));

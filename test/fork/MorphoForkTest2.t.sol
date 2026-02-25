@@ -1,45 +1,47 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.30;
 
-import {BaseTest} from "test/BaseTest.sol";
-import {IAdapter} from "test/external/morpho/interfaces/IAdapter.sol";
+import {IAdapter} from "lib/vault-v2/src/interfaces/IAdapter.sol";
 import {ICollateralManager} from "src/CollateralManager.sol";
 import {IController} from "src/interface/IController.sol";
 import {IERC4626} from "lib/openzeppelin-contracts/contracts/interfaces/IERC4626.sol";
-import {IVaultV2} from "test/external/morpho/interfaces/IVaultV2.sol";
-import {ReceiveSharesGate} from "test/external/morpho/ReceiveSharesGate.sol";
-import {VaultV2} from "test/external/morpho/VaultV2.sol";
-import {VaultV2Factory} from "test/external/morpho/VaultV2Factory.sol";
-import {MorphoVaultV1AdapterFactory} from "test/external/morpho/MorphoVaultV1AdapterFactory.sol";
+import {IMorphoVaultV1AdapterFactory} from "lib/vault-v2/src/adapters/interfaces/IMorphoVaultV1AdapterFactory.sol";
+import {IVaultV2} from "lib/vault-v2/src/interfaces/IVaultV2.sol";
+import {IVaultV2Factory} from "lib/vault-v2/src/interfaces/IVaultV2Factory.sol";
+import {ForkBaseTest} from "test/fork/ForkBaseTest.sol";
+import {Gate} from "src/external/morpho/Gate.sol";
 
-contract MorphoIntegrationTest is BaseTest {
+contract MorphoForkTest2 is ForkBaseTest {
     // accounts
     address internal depositor;
     address internal morphoAllocator;
 
     // contracts
     IAdapter internal adapter;
-    VaultV2 internal morpho;
-    ReceiveSharesGate internal gate;
+    IVaultV2 internal morpho;
+    Gate internal gate;
 
     // max rate (from morpho constants)
     uint256 constant MAX_MAX_RATE = 200e16 / uint256(365 days); // 200% APR
+
     // salt for vault deployment
     bytes32 constant SALT = bytes32(abi.encodePacked("salt"));
 
     function setUp() public virtual override {
+        setUpFork();
+        setUpMockVaults();
         depositor = vm.addr(0xC000);
         morphoAllocator = vm.addr(0xC001);
         setUpAccounts();
         setUpDeployments();
         // set up factories
-        VaultV2Factory vaultFactory = new VaultV2Factory();
-        MorphoVaultV1AdapterFactory adapterFactory = new MorphoVaultV1AdapterFactory();
+        IVaultV2Factory vaultFactory = IVaultV2Factory(VAULT_V2_FACTORY_ADDRESS);
+        IMorphoVaultV1AdapterFactory adapterFactory = IMorphoVaultV1AdapterFactory(VAULT_V1_ADAPTER_FACTORY_ADDRESS);
         // set vault as morpho vault
-        morpho = VaultV2(vaultFactory.createVaultV2(address(this), address(collateral), SALT));
+        morpho = IVaultV2(vaultFactory.createVaultV2(address(this), address(collateral), SALT));
         vault = IERC4626(address(vault));
         adapter = IAdapter(adapterFactory.createMorphoVaultV1Adapter(address(morpho), address(vault)));
-        gate = new ReceiveSharesGate(address(this));
+        gate = new Gate(owner);
         setUpController();
         setUpManager();
         setUpConfiguration();
@@ -119,7 +121,8 @@ contract MorphoIntegrationTest is BaseTest {
         vm.stopPrank();
 
         // whitelist the depositor inside the gate
-        gate.setIsWhitelisted(depositor, true);
+        vm.prank(owner);
+        gate.setManager(depositor);
 
         // Now deposit works
         vm.prank(depositor);
