@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.30;
 
-import {Config} from "forge-std/src/Config.sol";
+import {Config} from "forge-std/Config.sol";
 import {DeployMock} from "../../script/DeployMock.s.sol";
 import {IERC20} from "openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol";
-import {Test} from "forge-std/src/Test.sol";
+import {Test} from "forge-std/Test.sol";
 
 // test deployment script
 // this requires .env is set up correctly

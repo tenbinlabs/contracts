@@ -3,7 +3,7 @@ pragma solidity 0.8.30;
 
 import {AssetToken} from "../../../src/AssetToken.sol";
 import {StakedAsset} from "../../../src/StakedAsset.sol";
-import {Test} from "forge-std/src/Test.sol";
+import {Test} from "forge-std/Test.sol";
 
 /// @dev Handler to interact with the staking contract and save snapshots for invariant testing
 contract StakedAssetHandler is Test {

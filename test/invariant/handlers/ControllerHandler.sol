@@ -5,7 +5,7 @@ import {AssetToken} from "../../../src/AssetToken.sol";
 import {Controller, IController} from "../../../src/Controller.sol";
 import {MockERC20} from "../../mocks/MockERC20.sol";
 import {SafeERC20} from "openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol";
-import {Test} from "forge-std/src/Test.sol";
+import {Test} from "forge-std/Test.sol";
 
 /// @dev Handler to interact with the controller and save snapshots for invariant testing
 contract ControllerHandler is Test {

@@ -11,7 +11,7 @@ import {
 } from "../mocks/Mock1InchRouter.sol";
 import {MockERC20} from "../mocks/MockERC20.sol";
 import {SwapModuleHarness} from "../harness/SwapModuleHarness.sol";
-import {Test} from "forge-std/src/Test.sol";
+import {Test} from "forge-std/Test.sol";
 
 contract SwapModuleTest is Test {
     // constants

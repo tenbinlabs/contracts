@@ -2,7 +2,7 @@
 pragma solidity 0.8.30;
 
 import {BaseScript} from "./Base.s.sol";
-import {console2} from "forge-std/src/console2.sol";
+import {console2} from "forge-std/console2.sol";
 import {Controller} from "../src/Controller.sol";
 import {IController} from "../src/interface/IController.sol";
 

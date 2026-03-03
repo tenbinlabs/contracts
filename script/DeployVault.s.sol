@@ -2,8 +2,8 @@
 pragma solidity 0.8.30;
 
 import {BaseScript} from "./Base.s.sol";
-import {Config} from "forge-std/src/Config.sol";
-import {console2} from "forge-std/src/console2.sol";
+import {Config} from "forge-std/Config.sol";
+import {console2} from "forge-std/console2.sol";
 import {Gate} from "../src/external/morpho/Gate.sol";
 import {IAdapter} from "vault-v2/src/interfaces/IAdapter.sol";
 import {IERC20} from "openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";

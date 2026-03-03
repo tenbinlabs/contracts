@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.30;
 
-import {console2} from "forge-std/src/console2.sol";
+import {console2} from "forge-std/console2.sol";
 import {AssetSilo} from "../src/AssetSilo.sol";
 import {AssetToken} from "../src/AssetToken.sol";
 import {CollateralManager} from "../src/CollateralManager.sol";
@@ -27,7 +27,7 @@ import {SafeERC20} from "openzeppelin-contracts/contracts/token/ERC20/utils/Safe
 import {StakedAsset} from "../src/StakedAsset.sol";
 import {StakedAssetHarness} from "./harness/StakedAssetHarness.sol";
 import {SwapModuleHarness} from "./harness/SwapModuleHarness.sol";
-import {Test} from "forge-std/src/Test.sol";
+import {Test} from "forge-std/Test.sol";
 import {UniversalRewardsDistributor} from "./mocks/MockUniversalRewardsDistributor.sol";
 
 contract BaseTest is Test {

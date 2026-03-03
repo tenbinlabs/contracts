@@ -4,7 +4,7 @@ pragma solidity 0.8.30;
 import {MockAggregator} from "../mocks/MockAggregator.sol";
 import {IOracleAdapter} from "../../src/interface/IOracleAdapter.sol";
 import {GoldOracleAdapter} from "../../src/oracle/GoldOracleAdapter.sol";
-import {Test} from "forge-std/src/Test.sol";
+import {Test} from "forge-std/Test.sol";
 
 contract OracleAdapterTest is Test {
     uint256 internal constant ADAPTER_PRECISION = 1e10;

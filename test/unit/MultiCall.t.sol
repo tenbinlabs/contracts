@@ -5,7 +5,7 @@ import {IAccessControl} from "openzeppelin-contracts/contracts/access/IAccessCon
 import {IERC20} from "openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 import {MockERC20} from "../mocks/MockERC20.sol";
 import {MultiCall} from "../../src/MultiCall.sol";
-import {Test} from "forge-std/src/Test.sol";
+import {Test} from "forge-std/Test.sol";
 
 contract MultiCallTest is Test {
     address caller;
